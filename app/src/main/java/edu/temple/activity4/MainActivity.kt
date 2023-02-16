@@ -28,29 +28,34 @@ class MainActivity : AppCompatActivity() {
         for(i in 0 until textSizes.size)
             Log.d("Array value",textSizes[i].toString())
 
-
-        textSizeSelector.adapter = TextSizeAdapter(textSizes)
+        textSizeSelector.adapter = TextSizeAdapter(textSizes,callback)
         textSizeSelector.layoutManager = LinearLayoutManager(this)
     }
+
+    val callback: (Float) -> Unit = {x:Float -> textSizeDisplay.textSize = x }
+
 }
 
-/* Convert to RecyclerView.Adapter */
-class TextSizeAdapter(_textSizes: Array<Int>): RecyclerView.Adapter<TextSizeAdapter.TextSizeViewHolder>() {
-
+class TextSizeAdapter(_textSizes: Array<Int>, _callBack:(Float)->Unit) : RecyclerView.Adapter<TextSizeAdapter.TextSizeViewHolder>() {
     private val textSizes = _textSizes
-    class TextSizeViewHolder(view: TextView) : RecyclerView.ViewHolder(view){
+    private val callBack = _callBack
+    inner class TextSizeViewHolder(view: TextView) : RecyclerView.ViewHolder(view){
         val textView = view
+        init {
+            textView.setOnClickListener { callBack(textSizes[adapterPosition].toFloat()) }
+        }
+    }
 
-    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TextSizeViewHolder {
-        return TextSizeViewHolder(TextView(parent.context).apply {setPadding(5,20,0,20)})
+        return TextSizeViewHolder(TextView(parent.context).apply{setPadding(5,20,0,20)})
     }
+
     override fun getItemCount(): Int {
         return textSizes.size
     }
+
     override fun onBindViewHolder(holder: TextSizeViewHolder, position: Int) {
         holder.textView.text = textSizes[position].toString()
         holder.textView.textSize = textSizes[position].toFloat()
     }
-
 }
