@@ -1,10 +1,12 @@
 package edu.temple.activity4
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,8 +30,16 @@ class MainActivity : AppCompatActivity() {
         for(i in 0 until textSizes.size)
             Log.d("Array value",textSizes[i].toString())
 
-        textSizeSelector.adapter = TextSizeAdapter(textSizes,callback)
-        textSizeSelector.layoutManager = LinearLayoutManager(this)
+        with (findViewById(R.id.textSizeSelectorRecyclerView) as RecyclerView) {
+            adapter = TextSizeAdapter(textSizes) {
+                val intent = Intent(this@MainActivity,Activity_feb23::class.java)
+                intent.putExtra("KEY",it)
+                startActivity(intent)
+
+            }
+            layoutManager = LinearLayoutManager(this@MainActivity)
+        }
+
     }
 
     val callback: (Float) -> Unit = {x:Float -> textSizeDisplay.textSize = x }
